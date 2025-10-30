@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+                xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+>
+<head th:replace="~{fragments/head::head('글보기')}"></head>
+<body>
+<header th:replace="~{fragments/header}"></header>
+<div class="w-full max-w-4xl mx-auto mt-10">
+    <h1 class="text-3xl font-bold mb-8 text-center">게시글 상세</h1>
+
+    <table class="table w-full border border-base-300">
+        <tbody>
+        <!-- 제목 -->
+        <tr>
+            <th class="w-32 bg-base-200 text-left px-4 py-2">제목</th>
+            <td class="px-4 py-2" th:text="${board.title}"></td>
+        </tr>
+
+        <!-- 글쓴이 -->
+        <tr>
+            <th class="bg-base-200 text-left px-4 py-2">글쓴이</th>
+            <td class="px-4 py-2" th:text="${board.writer.userName}"></td>
+        </tr>
+
+        <!-- 내용 -->
+        <tr>
+            <th class="bg-base-200 text-left px-4 py-2 align-top">내용</th>
+            <td class="px-4 py-2 whitespace-pre-line" th:text="${board.content}"></td>
+        </tr>
+
+        <!-- 조회수 -->
+        <tr>
+            <th class="bg-base-200 text-left px-4 py-2">조회수</th>
+            <td class="px-4 py-2" th:text="${board.hit}"></td>
+        </tr>
+
+        <!-- 날짜 -->
+        <tr>
+            <th class="bg-base-200 text-left px-4 py-2">날짜</th>
+            <td class="px-4 py-2" th:text="${#temporals.format(board.regDate,'yyyy-MM-dd HH:mm:ss')}"></td>
+        </tr>
+        </tbody>
+    </table>
+    <ul class="mt-6 space-y-3">
+        <th:block th:each="item, loopStat : ${board.comments}">
+            <li
+                    class="group relative rounded-xl border border-base-300 bg-base-100/70 hover:bg-base-100 hover:shadow-md transition-all duration-200 overflow-hidden"
+            >
+                <!-- 본문영역 -->
+                <div class="flex items-start gap-4 p-4 pr-16">
+                    <!-- 아바타 (이니셜) -->
+                    <div class="avatar placeholder">
+                        <div class="w-10 h-10 rounded-full bg-base-300 text-base-content">
+                            <span th:text="${#strings.substring(item.writer.userName,0,1)}" class="flex justify-center items-center">U</span>
+                        </div>
+                    </div>
+
+                    <!-- 텍스트 -->
+                    <div class="flex-1 min-w-0">
+                        <div class="flex flex-wrap items-center gap-2">
+                            <span class="font-semibold truncate" th:text="${item.writer.userName}">작성자</span>
+                            <span class="text-xs opacity-60" th:text="${#temporals.format(item.regDate,'yyyy-MM-dd HH:mm')}">2025-10-28 14:22</span>
+                        </div>
+
+                        <p class="mt-1 whitespace-pre-wrap leading-relaxed"
+                           th:text="${item.content}">
+                            댓글 내용
+                        </p>
+                    </div>
+                </div>
+
+                <!-- 우측 상단 3점 메뉴 (내 댓글에만 노출) -->
+                <div class="absolute top-2 right-2"
+                     th:if="${#authentication.principal.loggedMember.userID == item.writer.userID}">
+                    <div class="dropdown dropdown-end">
+                        <button tabindex="0"
+                                class="btn btn-ghost btn-sm btn-square"
+                                aria-label="더보기"
+                                data-tip="더보기">
+                            <!-- 아이콘: 3점 (수직) -->
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5"
+                                 viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                                <circle cx="12" cy="5" r="1.75"></circle>
+                                <circle cx="12" cy="12" r="1.75"></circle>
+                                <circle cx="12" cy="19" r="1.75"></circle>
+                            </svg>
+                        </button>
+
+                        <ul tabindex="0"
+                            class="dropdown-content menu menu-sm p-2 shadow-lg bg-base-100 rounded-xl border border-base-300 w-36">
+                            <li>
+                                <button class="text-error btn-delete" th:data-idx="${item.id}">삭제</button>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- 하단 라인 (호버 시 강조) -->
+                <div class="h-[3px] w-0 bg-primary/60 group-hover:w-full transition-all duration-300"></div>
+
+                <!-- 삭제 확인 모달 (댓글별 고유 id) -->
+            </li>
+        </th:block>
+    </ul>
+
+    <div class="mt-6">
+        <div>
+            <form action="/comment/write/9" th:action="@{/comment/write/{id}(id=${board.id})}"  method="post"  class="flex gap-2">
+                <textarea name="content" class="textarea flex-1 resize-none h-24"></textarea>
+                <button class="btn btn-primary h-24">글쓰기</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 비밀번호 입력 + 삭제 버튼 -->
+    <div class="mt-6">
+        <div class="flex gap-2">
+            <form action="/board/delete" th:action="@{/board/{id}/delete(id=${board.id})}" method="post">
+                <button id="btn-delete" class="btn btn-error">삭제</button>
+            </form>
+        </div>
+    </div>
+    <!-- 이전/다음 글 -->
+<!--    <div class="mt-6 border-t border-base-300 pt-4 space-y-2">-->
+<!--        <div>-->
+<!--            <a href="" th:href="@{/board/{id}/detail(id=${prevBoardDto.id})}" class="link link-hover text-sm text-gray-600">이전 글 : <span th:text="${prevBoardDto.id}"></span><span th:text="${prevBoardDto.title}">이전 글 제목</span></a>-->
+<!--        </div>-->
+<!--        <div>-->
+<!--            <a href="" th:href="@{/board/{id}/detail(id=${nextBoardDto.id})}" class="link link-hover text-sm text-gray-600">다음 글 : <span th:text="${nextBoardDto.id}"></span><span th:text="${nextBoardDto.title}">다음 글 제목</span></a>-->
+<!--        </div>-->
+<!--    </div>-->
+</div>
+
+
+<div th:replace="~{fragments/footer::footer-sns}"></div>
+<script th:inline="javascript">
+    const btnDelete = document.querySelectorAll(".btn-delete");
+    btnDelete.forEach(function(item,idx) {
+        item.addEventListener("click",()=>{
+            const sendID = item.dataset.idx;
+            fetch("/comment/"+sendID+"/delete",{
+                method:"delete"
+            })
+                .then(response=>response.json())
+                .then(data=>{
+                    if(data.deleted){
+                        alert("삭제되었습니다.");
+                        location.reload();
+                    }
+                })
+        })
+    })
+</script>
+</body>
+</html>
