@@ -4,6 +4,7 @@ import com.jjang051.jpa.dto.CustomUserDetails;
 import com.jjang051.jpa.entity.Member;
 import com.jjang051.jpa.repository.MemberRepository;
 import com.jjang051.jpa.social.GoogleUserInfo;
+import com.jjang051.jpa.social.KakaoUserInfo;
 import com.jjang051.jpa.social.SocialUserInfo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,6 +37,8 @@ public class OAuth2DetailsService extends DefaultOAuth2UserService {
         SocialUserInfo socialUserInfo = null;
         if(provider.equals("google")){
             socialUserInfo = new GoogleUserInfo(oauth2UserInfo);
+        } else if(provider.equals("kakao")){
+            socialUserInfo = new KakaoUserInfo(oauth2UserInfo);
         }
         Optional<Member> findedMember = memberRepository.findByUserID(socialUserInfo.getProviderID());
         if(findedMember.isPresent()){
@@ -48,7 +51,6 @@ public class OAuth2DetailsService extends DefaultOAuth2UserService {
                     .build();
             memberRepository.save(member);
         }
-
         return new CustomUserDetails(findedMember.get(),oAuth2User.getAttributes());
     }
 }
