@@ -9,12 +9,13 @@ public class KakaoUserInfo implements SocialUserInfo {
     private final Map<String, Object> attributes;
     @Override
     public String getName() {
-        return "";
+        Map<String, Object> properties = (Map)attributes.get("properties");
+        return properties.get("nickname").toString();
     }
 
     @Override
     public String getEmail() {
-        return "";
+        return "이메일을 등록해주세요";
     }
 
     @Override
@@ -24,6 +25,7 @@ public class KakaoUserInfo implements SocialUserInfo {
 
     @Override
     public String getProviderID() {
-        return "kakao_";
+        return getProvider()+"_"+attributes.get("id").toString();
+        //kakao_4518735147
     }
 }

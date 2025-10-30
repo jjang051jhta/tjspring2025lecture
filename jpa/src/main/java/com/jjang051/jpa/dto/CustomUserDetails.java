@@ -20,6 +20,7 @@ public class CustomUserDetails implements UserDetails, OAuth2User {
 
     private final Member loggedMember;
     private Map<String, Object> oauth2UserInfo;
+
     public CustomUserDetails(Member loggedMember) {
         this.loggedMember = loggedMember;
     }

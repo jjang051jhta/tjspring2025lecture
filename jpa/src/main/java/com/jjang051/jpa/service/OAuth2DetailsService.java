@@ -35,22 +35,28 @@ public class OAuth2DetailsService extends DefaultOAuth2UserService {
         log.info("oauth2UserInfo={}", oauth2UserInfo);
         String provider  = userRequest.getClientRegistration().getRegistrationId();
         SocialUserInfo socialUserInfo = null;
+        log.info("provider={}", provider);
         if(provider.equals("google")){
+            log.info("provider=google");
             socialUserInfo = new GoogleUserInfo(oauth2UserInfo);
         } else if(provider.equals("kakao")){
+            log.info("provider=kakao");
             socialUserInfo = new KakaoUserInfo(oauth2UserInfo);
         }
         Optional<Member> findedMember = memberRepository.findByUserID(socialUserInfo.getProviderID());
+        Member returnedMember = null;
         if(findedMember.isPresent()){
-            findedMember.get();
+            //최초 로그인하고 db에서 값을 끄집어 내는 경우
+            returnedMember = findedMember.get();
         } else {
+            //최초 로그인 시도해서 db에 값을 입력하고 되돌려 받은 경우
             Member member = Member.builder()
                     .userID(socialUserInfo.getProviderID())
                     .userEmail(socialUserInfo.getEmail())
                     .userPW(bCryptPasswordEncoder.encode(UUID.randomUUID().toString()))
                     .build();
-            memberRepository.save(member);
+            returnedMember = memberRepository.save(member);
         }
-        return new CustomUserDetails(findedMember.get(),oAuth2User.getAttributes());
+        return new CustomUserDetails(returnedMember,oAuth2User.getAttributes());
     }
 }
