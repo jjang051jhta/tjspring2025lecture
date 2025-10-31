@@ -2,6 +2,7 @@ package com.jjang051.simple.controller;
 
 import com.jjang051.simple.dto.MemberDto;
 import com.jjang051.simple.dto.RequestDto;
+import com.jjang051.simple.dto.SignupDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -77,7 +78,25 @@ public class HomeController {
     public String requestPath(@PathVariable(value="userID",required = true) String userID){
         log.info("userID={}", userID);
         return "나의 아이디는 = "+userID;
-        http://localhost:8080/member/detail/jjang051?type=admin
+       // http://localhost:8080/member/detail/jjang051?type=admin
 
+    }
+    @GetMapping("/member/detail/{userID}")
+    @ResponseBody
+    public String memberDetail(@PathVariable(value="userID",required = true) String userID,
+                               @RequestParam(name = "type", required = true,defaultValue = "") String type
+                               ){
+        log.info("userID={}", userID);
+        return "userID==="+userID+" / type==="+type;
+        //http://localhost:8080/member/signup?userID=qwerty&password=1234&userName=장성호&zipcode=12345
+        //SignupDto
+    }
+    @PostMapping("/member/signup")
+    @ResponseBody
+    public String memberDetail(@ModelAttribute(name = "signupDto") SignupDto signupDto){
+        log.info("userID={}",signupDto);
+        return "success";
+        //http://localhost:8080/member/signup?userID=qwerty&password=1234&userName=장성호&zipcode=12345
+        //SignupDto
     }
 }
