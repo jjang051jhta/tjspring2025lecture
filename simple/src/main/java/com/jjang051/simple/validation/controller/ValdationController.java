@@ -1,8 +1,10 @@
 package com.jjang051.simple.validation.controller;
 
+import com.jjang051.simple.validation.dto.EventDto;
 import com.jjang051.simple.validation.dto.WriteDto;
 import com.jjang051.simple.validation.dto.ValidDto;
 import jakarta.validation.Valid;
+import jdk.jfr.Event;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -64,5 +66,22 @@ public class ValdationController {
         }
         return "redirect:/";
     }
-
+    @GetMapping("/event")
+    public String event(Model model) {
+        model.addAttribute("eventDto", new EventDto());
+        return "valid/event";
+    }
+    @PostMapping("/event")
+    public String eventProcess(@Valid @ModelAttribute("eventDto") EventDto eventDto,
+                               BindingResult bindingResult,
+                               Model model) {
+        log.info("eventDto = {}", eventDto);
+        if(eventDto.getEndDate().isBefore(eventDto.getStartDate())){
+            bindingResult.reject("notValid","종료일이 시작일보다 앞설 수 없습니다.");
+        }
+        if(bindingResult.hasErrors()){
+            return "valid/event";
+        }
+        return "redirect:/";
+    }
 }

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <form action="/valid/event" method="post" th:object="${eventDto}">
+        <div>
+            <th:block th:each="err:${#fields.globalErrors()}">
+                <p th:text="${err}"></p>
+            </th:block>
+        </div>
+        <div>
+            <input type="text" name="title" th:field="*{title}">
+        </div>
+        <div th:if="${#fields.hasErrors('title')}" th:errors="*{title}">
+            사용자 이름은 필수입력사항입니다.
+        </div>
+        <div>
+            <textarea name="content" th:field="*{content}" rows="5"></textarea>
+        </div>
+        <div th:if="${#fields.hasErrors('content')}" th:errors="*{content}">
+            사용자 이름은 필수입력사항입니다.
+        </div>
+        <div>
+            <input type="date"  th:field="*{startDate}">
+        </div>
+        <div th:if="${#fields.hasErrors('startDate')}" th:errors="*{startDate}">
+            사용자 이름은 필수입력사항입니다.
+        </div>
+        <div>
+            <input type="date"  th:field="*{endDate}">
+        </div>
+        <div th:if="${#fields.hasErrors('endDate')}" th:errors="*{endDate}">
+            사용자 이름은 필수입력사항입니다.
+        </div>
+        <div>
+           <spa>약관에 동의해 주세요</spa> <input type="checkbox" name="agree" th:field="*{agree}">
+        </div>
+        <div th:if="${#fields.hasErrors('agree')}" th:errors="*{agree}">
+            사용자 이름은 필수입력사항입니다.
+        </div>
+        <div><button>전송</button></div>
+    </form>
+</body>
+</html>
