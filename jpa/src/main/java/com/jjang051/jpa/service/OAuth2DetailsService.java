@@ -1,5 +1,6 @@
 package com.jjang051.jpa.service;
 
+import com.jjang051.jpa.constant.Role;
 import com.jjang051.jpa.dto.CustomUserDetails;
 import com.jjang051.jpa.entity.Member;
 import com.jjang051.jpa.repository.MemberRepository;
@@ -53,6 +54,7 @@ public class OAuth2DetailsService extends DefaultOAuth2UserService {
             Member member = Member.builder()
                     .userID(socialUserInfo.getProviderID())
                     .userEmail(socialUserInfo.getEmail())
+                    .role(Role.ROLE_USER)
                     .userPW(bCryptPasswordEncoder.encode(UUID.randomUUID().toString()))
                     .build();
             returnedMember = memberRepository.save(member);

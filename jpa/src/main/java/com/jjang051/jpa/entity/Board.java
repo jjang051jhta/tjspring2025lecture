@@ -17,7 +17,7 @@ import java.util.List;
 public class Board extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private Long id;
+    private Integer id;
 
     private String title;
     private String content;
