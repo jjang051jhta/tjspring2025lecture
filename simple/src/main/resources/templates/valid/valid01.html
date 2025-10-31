@@ -1,19 +1,32 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
 <body>
-    <form action="/valid/valid01" method="post">
+    <form action="/valid/valid01" method="post" th:object="${validDto}">
+        <div th:if="${#fields.hasGlobalErrors()}">
+            <p th:each="err:${#fields.globalErrors()}"
+               th:text="${err}">글로버 오류 메세지 출력</p>
+        </div>
         <div>
-            <input type="text" name="userName">
+            <input type="text" name="userName" th:field="*{userName}">
+        </div>
+        <div th:if="${#fields.hasErrors('userName')}" th:errors="*{userName}">
+            사용자 이름은 필수입력사항입니다.
         </div>
         <div>
             <input type="text" name="userPW">
         </div>
+        <div th:if="${#fields.hasErrors('userPW')}" th:errors="*{userPW}">
+            사용자 이름은 필수입력사항입니다.
+        </div>
         <div>
             <input type="text" name="userEmail">
+        </div>
+        <div th:if="${#fields.hasErrors('userEmail')}" th:errors="*{userEmail}">
+            사용자 이름은 필수입력사항입니다.
         </div>
         <div><button>전송</button></div>
     </form>
