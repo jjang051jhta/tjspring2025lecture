@@ -1,5 +1,6 @@
 package com.jjang051.simple.validation.controller;
 
+import com.jjang051.simple.validation.dto.WriteDto;
 import com.jjang051.simple.validation.dto.ValidDto;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -48,4 +49,20 @@ public class ValdationController {
         }
         return "/";
     }
+
+    @GetMapping("/write")
+    public String write(Model model) {
+        model.addAttribute("writeDto", new WriteDto());
+        return "valid/write";
+    }
+    @PostMapping("/write")
+    public String writeProcess(@Valid @ModelAttribute("writeDto") WriteDto writeDto,
+                               BindingResult bindingResult, Model model) {
+        log.info("writeDto = {}", writeDto);
+        if(bindingResult.hasErrors()){
+            return "valid/write";
+        }
+        return "redirect:/";
+    }
+
 }
