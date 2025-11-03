@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<header class="w-full border-b border-base-300" th:fragment="siteHeader(active)">
+    <div class="navbar max-w-[1200px] mx-auto">
+        <h1 class="navbar-start text-2xl font-bold"><a href="">JJANG051's LAB</a></h1>
+
+        <div class="navbar-center hidden lg:flex">
+            <ul class="menu menu-horizontal px-1">
+                <li><a href="" th:href="@{/}" class="rounded-none"
+                       th:classappend="${active=='home'} ? 'border-b-2 border-primary font-semibold'">
+                    HOME</a>
+                </li>
+
+                <li>
+                    <a href="" th:href="@{/mybatis/list}"
+                       class="rounded-none"
+                       th:classappend="${active=='board'} ? 'border-b-2 border-primary font-semibold'">
+                        BOARD
+                    </a></li>
+                <li>
+                    <a href="" th:href="@{/member/signup}" class="rounded-none"
+                       th:classappend="${active=='signup'} ? 'border-b-2 border-primary font-semibold'">SIGNUP</a>
+                </li>
+                <li><a href="" th:href="@{/member/login}"class="rounded-none"
+                       th:classappend="${active=='login'} ? 'border-b-2 border-primary font-semibold'"
+                >LOGIN</a></li>
+            </ul>
+        </div>
+        <div class="navbar-end"></div>
+    </div>
+</header>
+</html>

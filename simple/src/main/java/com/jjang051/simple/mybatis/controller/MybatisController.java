@@ -29,4 +29,9 @@ public class MybatisController {
         model.addAttribute("simpleDto",simpleDto);
         return "mybatis/detail";
     }
+    @GetMapping("/mybatis/write")
+    public String write(){
+        return "mybatis/write";
+    }
+
 }
