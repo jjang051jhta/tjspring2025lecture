@@ -11,7 +11,7 @@ spring:
       enabled: true
   datasource:
     url: jdbc:oracle:thin:@localhost:1521:xe
-    username: sparingjjang052
+    username: springjjang052
     driver-class-name:  oracle.jdbc.OracleDriver
     password: 1234
 
