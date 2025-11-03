@@ -9,5 +9,12 @@ spring:
       enabled: true
     livereload:
       enabled: true
+  datasource:
+    url: jdbc:oracle:thin:@localhost:1521:xe
+    username: sparingjjang052
+    driver-class-name:  oracle.jdbc.OracleDriver
+    password: 1234
 
-
+mybatis:
+  config-location: classpath:mybatis/config/config.xml
+  mapper-locations: classpath:mybatis/mapper/**/*.xml
