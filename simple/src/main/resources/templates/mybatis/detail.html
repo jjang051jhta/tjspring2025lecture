@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <table>
+        <tr>
+            <th>제목</th>
+            <td th:text="${simpleDto.title}"></td>
+        </tr>
+        <tr>
+            <th>글쓴이</th>
+            <td th:text="${simpleDto.writer}"></td>
+        </tr>
+        <tr>
+            <th>날짜</th>
+            <td th:text="${simpleDto.regdate}"></td>
+        </tr>
+        <tr>
+            <th>내용</th>
+            <td th:text="${simpleDto.content}"></td>
+        </tr>
+    </table>
+</body>
+</html>

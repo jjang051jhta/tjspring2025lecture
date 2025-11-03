@@ -22,4 +22,7 @@ public class SimpleService {
         return simpleDao.deleteById(id);
     }
 
+    public SimpleDto findById(int id) {
+        return simpleDao.findById(id);
+    }
 }

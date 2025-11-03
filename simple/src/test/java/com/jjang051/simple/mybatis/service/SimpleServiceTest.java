@@ -4,6 +4,8 @@ import com.jjang051.simple.mybatis.dto.SimpleDto;
 //import org.junit.jupiter.api.Assertions;
 import static org.assertj.core.api.Assertions.as;
 import static org.assertj.core.api.Assertions.assertThat;
+
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -55,5 +57,12 @@ class SimpleServiceTest {
     void deleteByIdTest() {
         int result = simpleService.deleteById(2);
         assertThat(result).isEqualTo(1);
+    }
+
+    @Test
+    @DisplayName("findById 테스트")
+    void findById() {
+        SimpleDto simpleDto = simpleService.findById(2);
+        assertThat(simpleDto).isNotNull();
     }
 }

@@ -18,3 +18,4 @@ spring:
 mybatis:
   config-location: classpath:mybatis/config/config.xml
   mapper-locations: classpath:mybatis/mapper/**/*.xml
+  type-aliases-package: com.jjang051.simple.mybatis.dto

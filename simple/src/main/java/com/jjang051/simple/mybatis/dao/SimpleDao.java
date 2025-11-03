@@ -10,5 +10,5 @@ public interface SimpleDao {
     List<SimpleDto> findAll();
     int write(SimpleDto simpleDto);
     int deleteById(int id);
-
+    SimpleDto findById(int id);
 }

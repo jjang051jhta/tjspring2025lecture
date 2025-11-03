@@ -14,4 +14,8 @@
     <delete id="deleteById" parameterType="int">
         delete from simple where id = #{id}
     </delete>
+    <select id="findById" parameterType="int"
+            resultType="SimpleDto">
+        select * from simple where id = #{id}
+    </select>
 </mapper>

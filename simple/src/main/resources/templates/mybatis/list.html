@@ -1,10 +1,18 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
 <body>
-
+    <ul>
+        <li th:each="item:${list}">
+            <span th:text="${item.id}"></span>
+            <a href="" th:href="@{/mybatis/{id}/detail(id=${item.id})}"><span th:text="${item.title}"></span></a>
+            <span th:text="${item.writer}"></span>
+            <span th:text="${item.regdate}"></span>
+            <span th:text="${item.hit}"></span>
+        </li>
+    </ul>
 </body>
 </html>

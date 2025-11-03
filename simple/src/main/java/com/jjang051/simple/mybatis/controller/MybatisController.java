@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 
@@ -21,5 +22,11 @@ public class MybatisController {
         List<SimpleDto> list = simpleService.findAll();
         model.addAttribute("list",list);
         return "mybatis/list";
+    }
+    @GetMapping("/mybatis/{id}/detail")
+    public String detail(@PathVariable("id") int id, Model model){
+        SimpleDto simpleDto =  simpleService.findById(id);
+        model.addAttribute("simpleDto",simpleDto);
+        return "mybatis/detail";
     }
 }
