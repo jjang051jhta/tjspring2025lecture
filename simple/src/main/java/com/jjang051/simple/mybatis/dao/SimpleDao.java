@@ -8,4 +8,7 @@ import java.util.List;
 @Mapper
 public interface SimpleDao {
     List<SimpleDto> findAll();
+    int write(SimpleDto simpleDto);
+    int deleteById(int id);
+
 }

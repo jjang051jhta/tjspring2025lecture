@@ -15,4 +15,11 @@ public class SimpleService {
     public List<SimpleDto> findAll(){
         return simpleDao.findAll();
     }
+    public int write(SimpleDto simpleDto){
+        return simpleDao.write(simpleDto);
+    }
+    public int deleteById(int id){
+        return simpleDao.deleteById(id);
+    }
+
 }

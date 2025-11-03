@@ -7,4 +7,11 @@
             resultType="com.jjang051.simple.mybatis.dto.SimpleDto">
         select * from simple
     </select>
+    <insert id="write">
+        insert into simple(id,writer,title,content,regdate,hit,password)
+        values(board_seq02.nextval,#{writer},#{title},#{content},sysdate,0,#{password})
+    </insert>
+    <delete id="deleteById" parameterType="int">
+        delete from simple where id = #{id}
+    </delete>
 </mapper>
