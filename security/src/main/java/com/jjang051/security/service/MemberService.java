@@ -5,6 +5,7 @@ import com.jjang051.security.dto.SignupDto;
 import com.jjang051.security.entity.Member;
 import com.jjang051.security.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +14,9 @@ import org.springframework.stereotype.Service;
 public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
+
+
+
     public Member saveMember(SignupDto signupDto){
         Member signupMember = Member.builder()
                 .userID(signupDto.getUserID())
