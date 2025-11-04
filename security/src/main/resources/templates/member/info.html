@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head::head('회원정보')}"></head>
+<body>
+<header th:replace="~{fragments/header}"></header>
+<!-- 제목 -->
+<div class="max-w-2xl mx-auto space-y-4">
+    <h1 class="text-3xl my-10">회원정보</h1>
+    <div th:text="${loggedMember.userID}">장성호</div>
+    <div th:text="${loggedMember.userName}">장성호</div>
+    <div th:text="${loggedMember.userEmail}">장성호</div>
+    <!--    <div th:text="${loggedMember.userPW}">장성호</div>-->
+    <div>
+        <a th:href="@{../member/delete}" href="" class="btn btn-primary">회원탈퇴</a>
+        <a href="" class="btn btn-primary">정보수정</a>
+        <a href="" class="btn btn-primary" th:href="@{../member/change-password}">비밀번호수정</a>
+    </div>
+</div>
+</body>
+</html>
