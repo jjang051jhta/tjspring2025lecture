@@ -37,7 +37,7 @@ public class SecurityConfig {
                                 .loginPage("/member/login") //get방식으로 로그인 폼 보여주는 곳
                                 .loginProcessingUrl("/member/login") // post로 처리되는 곳
                                 .defaultSuccessUrl("/",true)
-                                .failureUrl("/member/login?error=true")
+                                .failureUrl("/member/login?error=true") //이거는 redirect로 로그인 에러를 던짐/
                                 .usernameParameter("userID") //form안에 name값이 userID
                                 .passwordParameter("userPW") //form안에 패스워드 항목의 name값이 userPW
                                 .permitAll()
