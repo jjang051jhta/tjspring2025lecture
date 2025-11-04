@@ -3,10 +3,14 @@
 <head th:replace="~{fragments/head::head('로그인')}"></head>
 <body>
 <header th:replace="~{fragments/header}"></header>
-<form action="../member/login" method="post" th:object="${loginDto}"
+
+<form th:action="@{/member/login}" method="post" th:object="${loginDto}"
       class="max-w-md mx-auto mt-16 p-8 rounded-2xl bg-base-100
              border border-base-300 shadow-[0_10px_20px_-10px_rgba(0,0,0,0.25)]">
-    <!--<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">-->
+
+    <!-- CSRF 사용 중이면 주석 해제 -->
+    <!-- <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"> -->
+
     <h1 class="text-3xl text-center mb-8 font-bold">로그인</h1>
 
     <!-- 글로벌 오류 -->
@@ -18,44 +22,53 @@
 
     <!-- USER ID -->
     <div class="form-control">
-        <label class="label">
-            <span class="label-text font-bold mb-2">USER ID</span>
-        </label>
+        <label class="label"><span class="label-text font-bold mb-2">USER ID</span></label>
         <input type="text" th:field="*{userID}" placeholder="아이디를 입력하세요."
-               class="input input-bordered w-full"/>
-        <div th:if="${#fields.hasErrors('userID')}"
-             th:errors="*{userID}"
+               autocomplete="username" class="input input-bordered w-full"/>
+        <div th:if="${#fields.hasErrors('userID')}" th:errors="*{userID}"
              class="text-error text-sm mt-1"></div>
     </div>
 
     <!-- PASSWORD -->
     <div class="form-control mt-4">
-        <label class="label">
-            <span class="label-text font-bold">PASSWORD</span>
-        </label>
+        <label class="label"><span class="label-text font-bold">PASSWORD</span></label>
         <input type="password" th:field="*{userPW}" placeholder="비밀번호 입력"
-               class="input input-bordered w-full"/>
-        <div th:if="${#fields.hasErrors('userPW')}"
-             th:errors="*{userPW}"
+               autocomplete="current-password" class="input input-bordered w-full"/>
+        <div th:if="${#fields.hasErrors('userPW')}" th:errors="*{userPW}"
              class="text-error text-sm mt-1"></div>
     </div>
+
+    <!-- Remember-Me (로그인 유지) -->
+    <div class="form-control mt-5">
+        <label class="label cursor-pointer justify-start gap-2">
+            <!-- Spring Security 기본 파라미터 이름 -->
+            <input type="checkbox" name="remember-me" class="checkbox"/>
+            <span class="label-text">로그인 유지</span>
+        </label>
+        <!-- 운영에서 HTTPS면 Secure 쿠키 사용 권장 -->
+        <p class="text-xs text-gray-500 mt-1">개인 기기에서만 사용하세요.</p>
+    </div>
+
+    <!-- 로그인 실패 메시지 -->
     <div th:if="${param.error}" class="my-4 flex items-start text-red-600 text-sm font-medium">
         <span class="mr-2">⚠️</span>
         <span>아이디 또는 비밀번호가 올바르지 않습니다.</span>
-        <!-- 개발 중 상세 원인 확인용 -->
+        <!-- 개발용 상세 -->
         <!-- <small class="block opacity-70 ml-2"
                th:text="${session.SPRING_SECURITY_LAST_EXCEPTION?.message}"></small> -->
     </div>
 
-
-    <!-- (선택) 로그아웃 후 안내 -->
+    <!-- 로그아웃 안내 -->
     <div th:if="${param.logout}" class="alert alert-info shadow mb-4">
         <span>정상적으로 로그아웃되었습니다.</span>
     </div>
+
     <!-- 로그인 버튼 -->
     <div class="form-control mt-6">
         <button class="btn btn-primary w-full">로그인</button>
     </div>
+
+    <!-- 아이디/비번 찾기 -->
     <div class="form-control mt-6">
         <div class="flex justify-center items-center text-sm gap-2 text-gray-600">
             <a href="/member/find-id" class="hover:underline">아이디 찾기</a>
@@ -64,39 +77,31 @@
         </div>
     </div>
 
-
-    <!-- SNS 로그인 버튼 -->
+    <!-- SNS 로그인 -->
     <div class="mt-6 flex flex-col gap-3">
-        <a class="btn btn-outline w-full" href="/oauth2/authorization/google">
-            Google 로그인
-        </a>
-        <a class="btn w-full bg-yellow-300 hover:bg-yellow-400 text-black border-none" href="/oauth2/authorization/kakao"
-        >
-            Kakao 로그인
-        </a>
+        <a class="btn btn-outline w-full" href="/oauth2/authorization/google">Google 로그인</a>
+        <a class="btn w-full bg-yellow-300 hover:bg-yellow-400 text-black border-none"
+           href="/oauth2/authorization/kakao">Kakao 로그인</a>
     </div>
 </form>
 
 <div th:replace="~{fragments/footer::footer-sns}"></div>
+
 <script>
+    // (예시) 아이디 중복 체크 버튼이 있는 경우만 사용
     const btnIdCheck = document.querySelector("#btn-id-check");
     const userID = document.querySelector("#userID");
-    btnIdCheck.addEventListener("click", async (e) => {
-        const res = await fetch("/member/idCheck", {
-            method: "post",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({userID: userID.value})
-        })
-        const data = await res.json();
-        console.log(data);
-        if (data.isDuplicate) {
-            alert("쓸 수 없는 아이디 입니다.");
-        }
-    })
-    //로그인까지 만들어 보기...
-
+    if (btnIdCheck && userID) {
+        btnIdCheck.addEventListener("click", async () => {
+            const res = await fetch("/member/idCheck", {
+                method: "post",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ userID: userID.value })
+            });
+            const data = await res.json();
+            if (data.isDuplicate) alert("쓸 수 없는 아이디 입니다.");
+        });
+    }
 </script>
 </body>
 </html>

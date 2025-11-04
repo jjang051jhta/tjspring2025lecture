@@ -9,8 +9,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 @RequiredArgsConstructor
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
@@ -23,6 +21,10 @@ public class CustomUserDetailsService implements UserDetailsService {
                         .orElseThrow(
                                 ()->new UsernameNotFoundException("아이디 패스워드 확인해주세요.")
                         );
+        CustomUserDetails customUserDetails = new CustomUserDetails(member);
+        customUserDetails.getAuthorities().forEach(auth ->
+                System.out.println("✅ 로그인된 권한: " + auth.getAuthority())
+        );
         return new CustomUserDetails(member);
     }
 }

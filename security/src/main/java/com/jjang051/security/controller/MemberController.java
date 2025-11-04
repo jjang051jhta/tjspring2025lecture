@@ -50,4 +50,15 @@ public class MemberController {
     public String home(){
         return "index/index";
     }
+
+    @GetMapping({"/admin", "/admin/", "/admin/index"})
+    public String admin() {
+        return "admin/index"; // templates/admin/index.html
+    }
+    @GetMapping("/error/403")
+    public String error403() {
+        return "error/403"; // templates/admin/index.html
+    }
+
+
 }

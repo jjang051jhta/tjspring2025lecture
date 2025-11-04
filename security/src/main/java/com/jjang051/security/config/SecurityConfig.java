@@ -1,5 +1,7 @@
 package com.jjang051.security.config;
 
+import com.jjang051.security.service.CustomUserDetailsService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -11,44 +13,74 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 
-@Configuration
+import javax.sql.DataSource;
+
+
 @EnableWebSecurity
+@Configuration
+@RequiredArgsConstructor
 public class SecurityConfig {
+
+    private final DataSource dataSource;
+    private final CustomUserDetailsService customUserDetailsService;
+
+    @Bean
+    public PersistentTokenRepository persistentTokenRepository() {
+        JdbcTokenRepositoryImpl tokenRepository = new JdbcTokenRepositoryImpl();
+        tokenRepository.setDataSource(dataSource);
+        //tokenRepository.setCreateTableOnStartup(true);
+        return tokenRepository;
+    }
 
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests(auth ->
-                auth
-                        .requestMatchers("/",
-                                    "/main",
-                                    "/index",
-                                    "/member/signup",
-                                    "/member/login",
-                                    "/board/list",
-                                    "/css/**","/js/**"
-                        ).permitAll()
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, CustomUserDetailsService customUserDetailsService) throws Exception {
+        http
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(
+                                "/",
+                                "/main",
+                                "/index",
+                                "/member/login",
+                                "/member/signup",
+                                "/css/**",
+                                "/js/**",
+                                "/images/**").permitAll()
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
-                .csrf(csrf->csrf.disable())
-                .formLogin(form ->
-                        form
-                                .loginPage("/member/login") //get방식으로 로그인 폼 보여주는 곳
-                                .loginProcessingUrl("/member/login") // post로 처리되는 곳
-                                .defaultSuccessUrl("/",true)
-                                .failureUrl("/member/login?error=true") //이거는 redirect로 로그인 에러를 던짐/
-                                .usernameParameter("userID") //form안에 name값이 userID
-                                .passwordParameter("userPW") //form안에 패스워드 항목의 name값이 userPW
-                                .permitAll()
+                .formLogin(form -> form
+                        .loginPage("/member/login")
+                        .loginProcessingUrl("/member/login")
+                        .usernameParameter("userID")
+                        .passwordParameter("userPW")
+                        .defaultSuccessUrl("/", true)
+                        .failureUrl("/member/login?error=true")
+                        .permitAll()
                 )
-                .logout(logout ->
-                        logout
-                                .logoutUrl("/member/logout")
-                                .deleteCookies("JSESSIONID")
-                                .invalidateHttpSession(true)
-                                .logoutSuccessUrl("/")
-                        );
+                .logout(logout -> logout
+                        .logoutUrl("/member/logout")
+                        .logoutSuccessUrl("/")
+                        .invalidateHttpSession(true)
+                        .deleteCookies("JSESSIONID","remember-me")
+                        .permitAll()
+                )
+                .rememberMe(
+                        remember-> remember
+                                .userDetailsService(customUserDetailsService)
+                                .tokenRepository(persistentTokenRepository())
+                                .rememberMeParameter("remember-me")
+                                .rememberMeCookieName("remember-me")
+                                .tokenValiditySeconds(60*60*24*14)
+                                .key("jjang051-remember-me-secret-key")
+                                .useSecureCookie(false)
+                                .alwaysRemember(false)
+                )
+                .csrf(csrf -> csrf.disable());
+
         return http.build();
     }
 }
