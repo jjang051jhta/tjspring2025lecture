@@ -1,8 +1,14 @@
 package com.jjang051.security.controller;
 
+import com.jjang051.security.dto.LoginDto;
 import com.jjang051.security.dto.SignupDto;
+import com.jjang051.security.entity.Member;
+import com.jjang051.security.repository.MemberRepository;
+import com.jjang051.security.service.MemberService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -12,9 +18,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 @Controller
 @Slf4j
+@RequiredArgsConstructor
+
 public class MemberController {
+    private final MemberService memberService;
+
     @GetMapping("/member/login")
-    public String login(){
+    public String login(Model model) {
+        model.addAttribute("loginDto", new LoginDto());
         return "member/login";
     }
     @GetMapping("/member/signup")
@@ -26,7 +37,12 @@ public class MemberController {
     public String signupProcess(@Valid @ModelAttribute(name = "signupDto") SignupDto signupDto,
                                 BindingResult bindingResult){
         log.info("signDto==={}",signupDto);
-        return "member/signup";
+        if(bindingResult.hasErrors()){
+            return "member/signup";
+        }
+        Member insertedMember = memberService.saveMember(signupDto);
+        log.info("insertedMember==={}",insertedMember);
+        return "redirect:/";
     }
 
 

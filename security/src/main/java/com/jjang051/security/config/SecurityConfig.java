@@ -31,6 +31,7 @@ public class SecurityConfig {
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
+                .csrf(csrf->csrf.disable())
                 .formLogin(form ->
                         form
                                 .loginPage("/member/login") //get방식으로 로그인 폼 보여주는 곳

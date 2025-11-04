@@ -1,6 +1,8 @@
 package com.jjang051.security.entity;
 
+import com.jjang051.security.constant.Role;
 import jakarta.persistence.*;
+import lombok.*;
 
 @Entity
 @SequenceGenerator(
@@ -10,6 +12,10 @@ import jakarta.persistence.*;
         allocationSize = 1
 )
 @Table(name = "member_jpa")
+@Getter
+@Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE,
@@ -18,7 +24,8 @@ public class Member {
     private Long id;
     private String userName;
     private String userPW;
-    private String role;
+    @Enumerated(EnumType.STRING)
+    private Role role;
     @Column(unique = true, nullable = false)
     private String userID;
 
