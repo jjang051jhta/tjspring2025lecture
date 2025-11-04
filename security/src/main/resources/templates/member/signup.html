@@ -4,7 +4,7 @@
 <body>
 <header th:replace="~{fragments/header}"></header>
 
-<form action="../member/signup" method="post" th:object="${memberDto}" class="max-w-2xl mx-auto space-y-4"
+<form action="../member/signup" method="post" th:object="${signupDto}" class="max-w-2xl mx-auto space-y-4"
       enctype="multipart/form-data">
     <!-- 제목 -->
     <h1 class="text-3xl my-10 font-bold">회원가입</h1>
@@ -72,6 +72,16 @@
              class="text-error text-sm mt-1"></div>
     </div>
     <div class="form-control">
+        <label class="label mb-2">
+            <span class="label-text font-bold">PHONE</span>
+        </label>
+        <input type="text" th:field="*{userPhone}" placeholder="핸드폰"
+               class="input input-bordered w-full"/>
+        <div th:if="${#fields.hasErrors('userPhone')}"
+             th:errors="*{userPhone}"
+             class="text-error text-sm mt-1"></div>
+    </div>
+    <div class="form-control">
         <label class="label">
             <span class="label-text font-bold  mb-2">ADDRESS</span>
         </label>
@@ -94,7 +104,7 @@
             <label class="label mb-2">
                 <span class="label-text font-bold">PROFILE</span>
             </label>
-            <input type="file" class="file-input file-input-neutral w-full" name="profile"/>
+            <input type="file" class="file-input file-input-neutral w-full" name="profile" th:field="*{profile}"/>
         </div>
     </div>
 
