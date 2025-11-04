@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: security
+  datasource:
+    driver-class-name: oracle.jdbc.OracleDriver
+    url:  jdbc:oracle:thin:@localhost:1521:xe
+    username: springjjang052
+    password: 1234
+  #?? ?? ??? ???? ???? name: user
+  #password ? ?? ????
+  #??? Using generated security password: ee424136-9fd6-4bbc-87d1-6b6a5dab3449
+  security:
+    user:
+      name: jjang051
+      password: 1234
+      roles: ADMIN
+
+
