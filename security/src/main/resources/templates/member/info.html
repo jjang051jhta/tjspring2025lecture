@@ -6,9 +6,34 @@
 <!-- 제목 -->
 <div class="max-w-2xl mx-auto space-y-4">
     <h1 class="text-3xl my-10">회원정보</h1>
-    <div th:text="${loggedMember.userID}">장성호</div>
-    <div th:text="${loggedMember.userName}">장성호</div>
-    <div th:text="${loggedMember.userEmail}">장성호</div>
+    <div class="overflow-x-auto rounded-box border border-base-content/5 bg-base-100">
+        <table class="table">
+
+            <tbody>
+            <!-- row 1 -->
+            <tr>
+                <th>NAME</th>
+                <td th:text="${loggedMember.userName}"></td>
+            </tr>
+            <tr>
+                <th>EMAIL</th>
+                <td th:text="${loggedMember.userEmail}"></td>
+            </tr>
+            <tr>
+                <th>PHONE</th>
+                <td th:text="${loggedMember.userPhone}"></td>
+            </tr>
+            <tr>
+                <th>ZIPCODE</th>
+                <td th:text="${loggedMember.zipcode}"></td>
+            </tr>
+            <tr>
+                <th>ADDRESS</th>
+                <td th:text="${loggedMember.getUserAddress()}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
     <!--    <div th:text="${loggedMember.userPW}">장성호</div>-->
     <div>
         <a th:href="@{../member/delete}" href="" class="btn btn-primary">회원탈퇴</a>

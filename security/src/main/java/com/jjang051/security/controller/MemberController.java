@@ -1,20 +1,25 @@
 package com.jjang051.security.controller;
 
+import com.jjang051.security.dto.CustomUserDetails;
 import com.jjang051.security.dto.LoginDto;
 import com.jjang051.security.dto.SignupDto;
 import com.jjang051.security.entity.Member;
 import com.jjang051.security.repository.MemberRepository;
 import com.jjang051.security.service.MemberService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Controller
 @Slf4j
@@ -40,6 +45,18 @@ public class MemberController {
         if(bindingResult.hasErrors()){
             return "member/signup";
         }
+        if(memberService.idCheck(signupDto.getUserID())) {
+            bindingResult
+                    .rejectValue("userID","duplicateID","이미 존재하는 아이디입니다.");
+            return "member/signup";
+        }
+        if(memberService.emailCheck(signupDto.getUserEmail())) {
+            bindingResult
+                    .rejectValue("userEmail","duplicateEmail","이미 존재하는 이메일입니다.");
+            return "member/signup";
+        }
+
+        //여기다가 에러 만들어서 다시 보내주면 된다.
         Member insertedMember = memberService.saveMember(signupDto);
         log.info("insertedMember==={}",insertedMember);
         return "redirect:/";
@@ -51,6 +68,32 @@ public class MemberController {
         return "index/index";
     }
 
+
+    @GetMapping("/member/info")
+    public String info(@AuthenticationPrincipal CustomUserDetails customUserDetails, Model model){
+        model.addAttribute("loggedMember",customUserDetails.getLoggedMember());
+        return "member/info";
+    }
+    @GetMapping("/member/delete")
+    public String delete(){
+        return "member/delete";
+    }
+    @PostMapping("/member/delete")
+    public String deleteProcess(@RequestParam (name = "userPW") String userPW,
+                                @AuthenticationPrincipal CustomUserDetails customUserDetails,
+                                HttpServletRequest request
+    ){
+        String userID = customUserDetails.getLoggedMember().getUserID();
+        boolean isDelete = memberService.deleteMember(userID,userPW);
+        if(isDelete){
+            SecurityContextHolder.clearContext();
+            request.getSession(false).invalidate();
+            return "redirect:/";
+        }
+        return "member/delete";
+    }
+
+
     @GetMapping({"/admin", "/admin/", "/admin/index"})
     public String admin() {
         return "admin/index"; // templates/admin/index.html
@@ -59,6 +102,13 @@ public class MemberController {
     public String error403() {
         return "error/403"; // templates/admin/index.html
     }
-
-
+    @PostMapping("/member/idCheck")
+    @ResponseBody
+    public Map<String,Boolean> idCheck(@RequestBody SignupDto signupDto){
+        log.info("signupDto==={}",signupDto);
+        Map<String,Boolean> result = new HashMap<>();
+        Boolean isExistMember = memberService.idCheck(signupDto.getUserID());
+        result.put("isExistMember",isExistMember);
+        return result;
+    }
 }

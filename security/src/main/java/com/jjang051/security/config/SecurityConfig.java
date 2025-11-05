@@ -29,26 +29,21 @@ public class SecurityConfig {
 
     @Bean
     public PersistentTokenRepository persistentTokenRepository() {
-        JdbcTokenRepositoryImpl tokenRepository = new JdbcTokenRepositoryImpl();
-        tokenRepository.setDataSource(dataSource);
-        //tokenRepository.setCreateTableOnStartup(true);
-        return tokenRepository;
+        JdbcTokenRepositoryImpl repo = new JdbcTokenRepositoryImpl();
+        repo.setDataSource(dataSource);
+        // 최초 1회만 true로 하고, 테이블 만들어지면 주석 처리
+        // repo.setCreateTableOnStartup(true);
+        return repo;
     }
-
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(
-                                "/",
-                                "/main",
-                                "/index",
-                                "/member/login",
-                                "/member/signup",
-                                "/css/**",
-                                "/js/**",
-                                "/images/**").permitAll()
+                        .requestMatchers("/", "/main", "/index",
+                                "/member/login", "/member/signup",
+                                "/member/idCheck",
+                                "/css/**", "/js/**", "/images/**").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
@@ -68,16 +63,15 @@ public class SecurityConfig {
                         .deleteCookies("JSESSIONID","remember-me")
                         .permitAll()
                 )
-                .rememberMe(
-                        remember-> remember
-                                .userDetailsService(customUserDetailsService)
-                                .tokenRepository(persistentTokenRepository())
-                                .rememberMeParameter("remember-me")
-                                .rememberMeCookieName("remember-me")
-                                .tokenValiditySeconds(60*60*24*14)
-                                .key("jjang051-remember-me-secret-key")
-                                .useSecureCookie(false)
-                                .alwaysRemember(false)
+                .rememberMe(remember -> remember
+                        .userDetailsService(customUserDetailsService)
+                        .tokenRepository(persistentTokenRepository())
+                        .rememberMeParameter("remember-me")
+                        .rememberMeCookieName("remember-me")
+                        .tokenValiditySeconds(60 * 60 * 24 * 14)
+                        .key("jjang051-remember-me-secret-key")
+                        .useSecureCookie(false)
+                        .alwaysRemember(false)
                 )
                 .csrf(csrf -> csrf.disable());
 
