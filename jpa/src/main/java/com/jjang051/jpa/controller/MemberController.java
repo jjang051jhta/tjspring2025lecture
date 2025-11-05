@@ -40,6 +40,7 @@ public class MemberController {
         memberService.save(memberDto);
         return "redirect:/";
     }
+    }
 
     @GetMapping("/login")
     public String login(Model model) {
