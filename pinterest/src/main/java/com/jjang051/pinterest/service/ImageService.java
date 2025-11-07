@@ -13,7 +13,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ImageService {
     private final ImageRepository imageRepository;
-    public List<ImgEntity> findAll(){
+    public List<ImgDto> findAll(){
         /*
         List<ImgDto> list = new ArrayList<>();
         ImgDto imgDto01 = ImgDto.builder()
@@ -33,8 +33,17 @@ public class ImageService {
         list.add(imgDto01);
         list.add(imgDto02);
          */
-        List<ImgEntity> list = imageRepository.findAll();
+        List<ImgDto> list = imageRepository.findAll().stream()
+                            .map(e->ImgDto.from(e))
+                .toList();
+        List<ImgDto> list02 = imageRepository.findAll().stream()
+                .map(ImgDto::from)
+                .toList();
+
         System.out.println("size==="+list.size());
-        return list;
+        return list02;
+    }
+    public void save(ImgDto imgDto){
+        imageRepository.save(imgDto.toEntity());
     }
 }

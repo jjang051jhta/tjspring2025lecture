@@ -24,9 +24,9 @@ public class MainController {
     }
     @GetMapping("/data")
     @ResponseBody
-    public Map<String,List<ImgEntity>> data(){
-        List<ImgEntity> list = imageService.findAll();
-        Map<String,List<ImgEntity>> map = new HashMap<>();
+    public Map<String,List<ImgDto>> data(){
+        List<ImgDto> list = imageService.findAll();
+        Map<String,List<ImgDto>> map = new HashMap<>();
         map.put("typoList",list);
         return map;
     }
